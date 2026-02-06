@@ -1,5 +1,5 @@
-## Student Name:
-## Student ID: 
+## Student Name: Arnav Gupta
+## Student ID: 219973452
 
 """
 Stub file for the is allocation feasible exercise.
@@ -19,15 +19,41 @@ def is_allocation_feasible(
     requests: List[Dict[str, Number]]
 ) -> bool:
     """
-    Determine whether a set of resource requests can be satisfied given limited capacities.
-
-    Args:
-        resources : Dict[str, Number], Mapping from resource name to total available capacity.
-        requests : List[Dict[str, Number]], List of requests. Each request is a mapping from resource name to the amount required.
-
-    Returns:
-        True if the allocation is feasible, False otherwise.
-
+    Determine whether a set of resource requests can be satisfied
+    given limited capacities.
     """
-    # TODO: Implement this function
-    raise NotImplementedError("suggest_slots function has not been implemented yet")
+
+    # Validate resource capacities
+    for r_name, cap in resources.items():
+        if cap < 0:
+            return False
+
+    # Track usage
+    usage = {r: 0 for r in resources}
+
+    # Process each request
+    for req in requests:
+
+        # NEW: structural validation
+        if not isinstance(req, dict):
+            raise ValueError("Each request must be a dictionary")
+
+        # Check unknown resources
+        for r_name in req:
+            if r_name not in resources:
+                return False
+
+        # Check negative amounts
+        for amount in req.values():
+            if amount < 0:
+                return False
+
+        # Accumulate resource usage
+        for r_name, amount in req.items():
+            usage[r_name] += amount
+
+            # Check capacity violation
+            if usage[r_name] > resources[r_name]:
+                return False
+
+    return True
