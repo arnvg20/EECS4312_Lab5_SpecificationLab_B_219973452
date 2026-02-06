@@ -1,5 +1,5 @@
-## Student Name:
-## Student ID: 
+## Student Name: Arnav Gupta
+## Student ID: 219973452
 
 """
 Public test suite for the meeting slot suggestion exercise.
@@ -46,3 +46,51 @@ def test_non_dict_request_raises():
         is_allocation_feasible(resources, requests)
 
 """TODO: Add at least 5 additional test cases to test your implementation."""
+
+def test_empty_requests_feasible():
+    # Empty Requests
+    # Constraint: no demand means always feasible
+    # Reason: system must handle empty request list
+    resources = {'cpu': 10, 'mem': 20}
+    requests = []
+    assert is_allocation_feasible(resources, requests) is True
+
+
+def test_zero_capacity_resource():
+    # Zero Capacity Resource
+    # Constraint: resource with zero capacity cannot be allocated
+    # Reason: usage > capacity must be caught
+    resources = {'cpu': 0}
+    requests = [{'cpu': 0}, {'cpu': 1}]
+    assert is_allocation_feasible(resources, requests) is False
+
+
+def test_negative_capacity_infeasible():
+    # Negative Capacity Infeasible
+    # Constraint: resource capacities must be >= 0
+    # Reason: negative capacity violates constraints
+    resources = {'cpu': -5}
+    requests = [{'cpu': 1}]
+    assert is_allocation_feasible(resources, requests) is False
+
+
+def test_negative_request_amount_infeasible():
+    # Negative Request Amount
+    # Constraint: request values must be >= 0
+    # Reason: negative usage is invalid
+    resources = {'cpu': 10}
+    requests = [{'cpu': -1}]
+    assert is_allocation_feasible(resources, requests) is False
+
+
+def test_multiple_resources_exact_fit():
+    # Multiple Resources Exact Fit
+    # Constraint: total usage exactly equals capacity
+    # Reason: boundary condition for feasibility
+    resources = {'cpu': 6, 'mem': 20}
+    requests = [
+        {'cpu': 2, 'mem': 5},
+        {'cpu': 1, 'mem': 10},
+        {'cpu': 3, 'mem': 5},
+    ]
+    assert is_allocation_feasible(resources, requests) is True
